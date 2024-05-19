@@ -20,9 +20,10 @@ class Scraper:
         res = []
         for div in product_divs[:limit]:
             title = self.get_title(div)
+            link = self.get_link(div)
             price = self.get_price(div)
             image = self.get_image_src(div)
-            res.append({"title": title, "price": price, "image": image})
+            res.append({"title": title, "link": link, "price": price, "image": image})
         return res
 
 
@@ -32,6 +33,7 @@ class Ebay(Scraper):
         "_url",
         "_item_div_class",
         "_title_div_class",
+        "_link_div_class",
         "_price_div_class",
         "_price_class",
         "_image_div_class",
@@ -42,6 +44,7 @@ class Ebay(Scraper):
         self._url = "https://www.ebay.com/sch/i.html?_nkw="
         self._item_div_class = "s-item__wrapper"
         self._title_div_class = "s-item__title"
+        self._link_a_class = "s-item__link"
         self._price_div_class = "s-item__detail s-item__detail--primary"
         self._price_span_class = "s-item__price"
         self._image_div_class = "s-item__image-section"
@@ -54,6 +57,10 @@ class Ebay(Scraper):
     def get_title(self, div):
         title_div = div.find("div", {"class": self._title_div_class})
         return title_div.text if title_div else "No title"
+    
+    def get_link(self, div):
+        link_a = div.find("a", {"class": self._link_a_class})
+        return link_a["href"] if link_a else "No link"
 
     def get_price(self, div):
         price_div = div.find("div", {"class": self._price_div_class})
