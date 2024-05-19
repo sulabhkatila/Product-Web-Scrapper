@@ -14,16 +14,26 @@ class Scraper:
     def __str__(self):
         return f"Scraper for product: {self.product_name} at URL: {self._url + self.product_name}"
 
-    def scrape(self, limit=None):
+    def scrape(self, limit=None, price_less_than=None):
 
         product_divs = self.get_product_divs()
         res = []
-        for div in product_divs[:limit]:
+        count = 0
+        for div in product_divs:
+            if limit and count >= limit:
+                break
             title = self.get_title(div)
             link = self.get_link(div)
             price = self.get_price(div)
             image = self.get_image_src(div)
+            if (
+                price_less_than
+                and price
+                and float(price.replace("$", "")) > price_less_than
+            ):
+                continue
             res.append({"title": title, "link": link, "price": price, "image": image})
+            count += 1
         return res
 
 
@@ -57,7 +67,7 @@ class Ebay(Scraper):
     def get_title(self, div):
         title_div = div.find("div", {"class": self._title_div_class})
         return title_div.text if title_div else "No title"
-    
+
     def get_link(self, div):
         link_a = div.find("a", {"class": self._link_a_class})
         return link_a["href"] if link_a else "No link"
@@ -65,7 +75,9 @@ class Ebay(Scraper):
     def get_price(self, div):
         price_div = div.find("div", {"class": self._price_div_class})
         price_span = (
-            price_div.find("span", {"class": self._price_span_class}) if price_div else None
+            price_div.find("span", {"class": self._price_span_class})
+            if price_div
+            else None
         )
         return price_span.text if price_span else "No price"
 
