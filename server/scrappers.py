@@ -43,7 +43,7 @@ class Ebay(Scraper):
         self._item_div_class = "s-item__wrapper"
         self._title_div_class = "s-item__title"
         self._price_div_class = "s-item__detail s-item__detail--primary"
-        self._price_class = "s-item__price"
+        self._price_span_class = "s-item__price"
         self._image_div_class = "s-item__image-section"
         super().__init__(product_name)
 
@@ -58,7 +58,7 @@ class Ebay(Scraper):
     def get_price(self, div):
         price_div = div.find("div", {"class": self._price_div_class})
         price_span = (
-            price_div.find("span", {"class": self._price_class}) if price_div else None
+            price_div.find("span", {"class": self._price_span_class}) if price_div else None
         )
         return price_span.text if price_span else "No price"
 
