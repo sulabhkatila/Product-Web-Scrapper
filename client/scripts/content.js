@@ -5,10 +5,8 @@ const getUrl = () => {
 };
 
 const fetchEbayData = async (url, limit = null, price = null) => {
-  // ...//www.amazon.com/productname/.. -> this is one type of url
-  // ...//www.amazon.com/s?k=productname&... -> this is another type of url
-  // we need to figure out what type of url we are at, and get the product name from the url
-
+  // ...//www.amazon.com/productname/..
+  // ...//www.amazon.com/s?k=productname&...
   let fetchUrl = "";
   if (url.includes("s?k=")) {
     const productname = url.split("s?k=")[1].split("&")[0];
@@ -84,4 +82,60 @@ fetchEbayData(getUrl()).then((data) => {
   });
 });
 
+const toggleButton = document.createElement("button");
+
+toggleButton.innerText = "Toggle";
+toggleButton.style.display = "flex";
+toggleButton.style.position = "fixed";
+toggleButton.style.right = "10px";
+toggleButton.style.top = "10px";
+toggleButton.style.width = "80px";
+toggleButton.style.height = "40px";
+toggleButton.style.zIndex = "9999";
+toggleButton.addEventListener("mousedown", dragMouseDown);
+toggleButton.addEventListener("click", () => {
+  toggleProductDiv();
+});
+
+let pos1 = 0,
+  pos2 = 0,
+  pos3 = 0,
+  pos4 = 0;
+let isDragging = false;
+
+function toggleProductDiv() {
+    if (isDragging) return;
+  if (newDiv.style.display === "none") {
+    newDiv.style.display = "flex";
+  } else {
+    newDiv.style.display = "none";
+  }
+};
+
+function dragMouseDown(e) {
+  e.preventDefault();
+  pos3 = e.clientX;
+  pos4 = e.clientY;
+  document.onmouseup = closeDragElement;
+  document.onmousemove = elementDrag;
+};
+
+function elementDrag(e) {
+  e.preventDefault();
+  pos1 = pos3 - e.clientX;
+  pos2 = pos4 - e.clientY;
+  pos3 = e.clientX;
+  pos4 = e.clientY;
+  toggleButton.style.top = toggleButton.offsetTop - pos2 + "px";
+  toggleButton.style.left = toggleButton.offsetLeft - pos1 + "px";
+};
+
+function closeDragElement() {
+  document.onmouseup = null;
+  document.onmousemove = null;
+}
+
+document.body.appendChild(toggleButton);
+
 document.body.appendChild(newDiv);
+document.body.appendChild(toggleButton);
