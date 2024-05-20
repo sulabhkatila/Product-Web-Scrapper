@@ -1,9 +1,34 @@
-const puppeteer = require('puppeteer');
+let showElements = false;
 
-(async () => {
-	const browser = await puppeteer.launch();
-	const page = await browser.newPage();
-	await page.goto('https://www.freecodecamp.org/');
+console.log('hello')
+
+const displayElements = () => {
+	console.log('need to display')
+};
+
+const hideElements = () => {
+	console.log('no')
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+    const switchInput = document.querySelector('.switch input');
 	
-	await browser.close();
-})();
+	if (showElements) {
+		switchInput.checked = true;
+		displayElements();
+	} else {
+		switchInput.checked = false;
+		hideElements();
+	}
+
+    switchInput.addEventListener('change', () => {
+        if (switchInput.checked) {
+            showElements = true;
+			displayElements();
+        } else {
+			showElements = false;
+			hideElements();
+		}
+    });
+});

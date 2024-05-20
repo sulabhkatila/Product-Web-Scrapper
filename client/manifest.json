@@ -6,5 +6,12 @@
   "action": {
     "default_popup": "index.html",
     "default_icon": "assets/hello_extensions.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://developer.chrome.com/docs/extensions/*",
+      "https://developer.chrome.com/docs/webstore/*", "https://www.amazon.com/*", "http://www.amazon.com/*", "https://www.amazon.in/*", "http://www.amazon.in/*"],
+      "js": ["scripts/content.js"]
+    }
+  ]
 }
