@@ -9,7 +9,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.amazon.com/*/*", "http://www.amazon.com/*/*", "https://www.amazon.in/*/*", "http://www.amazon.in/*/*"],
+      "matches": ["https://www.amazon.com/*", "http://www.amazon.com/*", "https://www.amazon.in/*", "http://www.amazon.in/*"],
       "js": ["scripts/content.js"]
     }
   ]

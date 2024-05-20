@@ -1,13 +1,23 @@
 const getUrl = () => {
   const url = window.location.href;
+  console.log(url);
   return url;
 };
 
 const fetchEbayData = async (url, limit = null, price = null) => {
-  // ...//www.amazon.com/productname
-  const productname = url.split("/")[3];
+  // ...//www.amazon.com/productname/.. -> this is one type of url
+  // ...//www.amazon.com/s?k=productname&... -> this is another type of url
+  // we need to figure out what type of url we are at, and get the product name from the url
 
-  fetchUrl = `http://localhost:4000/ebay/${productname}`;
+  let fetchUrl = "";
+  if (url.includes("s?k=")) {
+    const productname = url.split("s?k=")[1].split("&")[0];
+    fetchUrl = `http://localhost:4000/ebay/${productname}`;
+  } else {
+    const productname = url.split("/")[3];
+    fetchUrl = `http://localhost:4000/ebay/${productname}`;
+  }
+
   if (limit) {
     fetchUrl += `?limit=${limit}`;
   }
