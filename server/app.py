@@ -9,6 +9,18 @@ app = Flask("Scrapper API")
 
 @app.route("/ebay/<product>")
 def get_product_from_ebay(product):
+    # Allow anyone to access the api
+    if request.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": "Content-Type",
+        }
+        return ("", 204, headers)
+
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+    }
     product_name = product
     limit = int(request.args.get("limit")) if request.args.get("limit") else None
     price_less_than = (
@@ -17,7 +29,8 @@ def get_product_from_ebay(product):
         else None
     )
     ebay = Ebay(product_name)
-    return {"products": ebay.scrape(limit, price_less_than)}
+    response = {"products": ebay.scrape(limit, price_less_than)}
+    return response, 200, headers
 
 
 if __name__ == "__main__":
