@@ -5,16 +5,13 @@ from bs4 import BeautifulSoup as bs
 class Scraper:
     # Base Class of all scrappers
 
-    def __init__(self, product_name):
+    def __str__(self):
+        return f"Scrapes ebay for products at {self._url}"
 
-        self.product_name = product_name
+    def scrape(self, product_name, limit=None, price_less_than=None):
+
         html = requests.get(self._url + product_name).text
         self._soup = bs(html, "html.parser")
-
-    def __str__(self):
-        return f"Scraper for product: {self.product_name} at URL: {self._url + self.product_name}"
-
-    def scrape(self, limit=None, price_less_than=None):
 
         product_divs = self.get_product_divs()
         res = []
@@ -50,7 +47,7 @@ class Ebay(Scraper):
         "_soup",
     ]
 
-    def __init__(self, product_name):
+    def __init__(self):
         self._url = "https://www.ebay.com/sch/i.html?_nkw="
         self._item_div_class = "s-item__wrapper"
         self._title_div_class = "s-item__title"
@@ -58,7 +55,6 @@ class Ebay(Scraper):
         self._price_div_class = "s-item__detail s-item__detail--primary"
         self._price_span_class = "s-item__price"
         self._image_div_class = "s-item__image-section"
-        super().__init__(product_name)
 
     def get_product_divs(self):
         # the first of _item_div_class div is not a product

@@ -3,8 +3,7 @@ from scrappers import Ebay
 from settings import DEBUG, PORT
 
 app = Flask("Scrapper API")
-
-app = Flask("Scrapper API")
+ebay = Ebay()
 
 
 @app.route("/ebay/<product>")
@@ -28,8 +27,11 @@ def get_product_from_ebay(product):
         if request.args.get("price-less-than")
         else None
     )
-    ebay = Ebay(product_name)
-    response = {"products": ebay.scrape(limit, price_less_than)}
+    response = {
+        "products": ebay.scrape(
+            limit=limit, price_less_than=price_less_than, product_name=product_name
+        )
+    }
     return response, 200, headers
 
 
