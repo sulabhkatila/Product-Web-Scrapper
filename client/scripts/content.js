@@ -1,3 +1,13 @@
+const EXTENSION_WIDTH = "300px";
+const HEADER_DIV_HEIGHT = "140px";
+const SORT_BTN_HEIGHT = "40px";
+const SORT_BTN_WIDTH = "100px";
+
+let sortMessage = "$ -> $$$";
+let allProducts = [];
+let sortedProducts = [];
+let isSortedFromCheapest = false;
+
 const getUrl = () => {
   const url = window.location.href;
   console.log(url);
@@ -31,11 +41,6 @@ const fetchEbayData = async (url, limit = null, price = null) => {
     console.error("Error:", error);
   }
 };
-
-let sortMessage = "Cheap to Expensive";
-let allProducts = [];
-let sortedProducts = [];
-let isSortedFromCheapest = false;
 
 const displayProducts = (products) => {
   const somediv = document.getElementById("somediv");
@@ -83,7 +88,6 @@ const displayProducts = (products) => {
 };
 
 const sortProductsByPrice = () => {
-  console.log("Sorting products by ", sortMessage);
   if (sortedProducts.length === 0) {
     sortedProducts = [...allProducts].sort((a, b) => {
       // a.price = "$100.00"
@@ -101,15 +105,13 @@ const sortProductsByPrice = () => {
   }
 
   if (!isSortedFromCheapest) {
-    console.log("now sorting from cheapest to expensive");
     displayProducts(sortedProducts);
     isSortedFromCheapest = true;
-    sortMessage = "Expensive to Cheap";
+    sortMessage = "$$$ -> $";
   } else {
-    console.log("now sorting from expensive to cheapest");
     displayProducts([...sortedProducts].reverse());
     isSortedFromCheapest = false;
-    sortMessage = "Cheap to Expensive";
+    sortMessage = "$ -> $$$";
   }
 
   sortButton.innerText = sortMessage;
@@ -120,46 +122,67 @@ newDiv.style.position = "fixed";
 newDiv.style.right = "0";
 newDiv.style.top = "0";
 newDiv.style.height = "100%";
-newDiv.style.width = "300px";
+newDiv.style.width = EXTENSION_WIDTH;
 newDiv.style.overflowY = "auto";
 newDiv.style.display = "flex";
 newDiv.style.flexDirection = "column";
-newDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+newDiv.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
 newDiv.style.color = "white";
 newDiv.style.zIndex = "9999";
 
 const headerDiv = document.createElement("div");
 headerDiv.style.position = "fixed";
+headerDiv.style.display = "flex";
+headerDiv.style.justifyContent = "center";
+headerDiv.style.alignItems = "center";
+headerDiv.style.flexDirection = "column";
 headerDiv.innerText = "THE SCRAPPER";
 headerDiv.style.top = "0";
-headerDiv.style.width = "100%";
-headerDiv.style.height = "70px";
-headerDiv.style.backgroundColor = "rgba(0, 0, 0, 1)";
+headerDiv.style.width = EXTENSION_WIDTH;
+headerDiv.style.height = HEADER_DIV_HEIGHT;
+headerDiv.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
 headerDiv.style.color = "white";
 
 // Option to sort by price
 const sortButton = document.createElement("button");
 sortButton.innerText = sortMessage;
-sortButton.style.marginLeft = "10px";
+sortButton.style.height = SORT_BTN_HEIGHT;
+sortButton.style.width = SORT_BTN_WIDTH;
+sortButton.style.cursor = "pointer";
+sortButton.style.textAlign = "center";
+sortButton.style.color = "black";
 sortButton.addEventListener("click", () => {
-  // Call a function to sort the products by price
   sortProductsByPrice();
 });
 
+const unsortButton = document.createElement("button");
+unsortButton.innerText = "Unsort";
+unsortButton.style.height = SORT_BTN_HEIGHT;
+unsortButton.style.width = SORT_BTN_WIDTH;
+unsortButton.style.textAlign = "center";
+unsortButton.style.cursor = "pointer";
+unsortButton.style.color = "black";
+unsortButton.addEventListener("click", () => {
+  displayProducts(allProducts);
+  sortMessage = "$ -> $$$";
+  sortButton.innerText = sortMessage;
+  isSortedFromCheapest = false;
+});
+
 headerDiv.appendChild(sortButton);
+headerDiv.appendChild(unsortButton);
 newDiv.appendChild(headerDiv);
 
 const somediv = document.createElement("div");
 somediv.id = "somediv";
 somediv.style.display = "flex";
 somediv.style.flexDirection = "column";
-somediv.style.marginTop = "50px";
+somediv.style.marginTop = HEADER_DIV_HEIGHT;
 somediv.style.height = "100%";
 somediv.style.overflowY = "auto";
 newDiv.appendChild(somediv);
 
 const toggleButton = document.createElement("button");
-
 toggleButton.innerText = "Toggle";
 toggleButton.style.display = "flex";
 toggleButton.style.position = "fixed";
@@ -173,23 +196,10 @@ toggleButton.addEventListener("click", () => {
   toggleProductDiv();
 });
 
-const unsortButton = document.createElement("button");
-
-unsortButton.innerText = "Unsort";
-unsortButton.style.marginLeft = "10px";
-unsortButton.addEventListener("click", () => {
-  displayProducts(allProducts);
-  sortMessage = "Cheap to Expensive";
-  sortButton.innerText = sortMessage;
-  sortedProducts = [];
-  isSortedFromCheapest = false;
-});
-
 document.body.appendChild(toggleButton);
 
 document.body.appendChild(newDiv);
 document.body.appendChild(toggleButton);
-headerDiv.appendChild(unsortButton);
 
 fetchEbayData(getUrl()).then((data) => {
   allProducts = data.products;
