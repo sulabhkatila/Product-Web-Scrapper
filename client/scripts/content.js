@@ -48,7 +48,7 @@ const fetchEbayData = async (url, limit = null, price = null) => {
   } else {
     productname = url.split("/")[3];
   }
-  fetchUrl = `http://34.30.126.151/ebay/${productname}`;
+  fetchUrl = `https://scrapperapi.endpoints.isentropic-card-423523-k4.cloud.goog/ebay/${productname}`;
 
   if (limit) {
     fetchUrl += `?limit=${limit}`;
