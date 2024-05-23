@@ -1,12 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Scrapper",
-  "description": "Base Level Extension",
+  "description": "Scrapes Ebay for products",
   "version": "1.0",
   "action": {
     "default_popup": "index.html",
     "default_icon": "assets/hello_extensions.png"
   },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "http://www.amazon.com/*",
+    "https://www.amazon.in/*",
+    "http://www.amazon.in/*"
+  ],
   "content_scripts": [
     {
       "matches": ["https://www.amazon.com/*", "http://www.amazon.com/*", "https://www.amazon.in/*", "http://www.amazon.in/*"],

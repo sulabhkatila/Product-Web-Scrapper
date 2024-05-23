@@ -8,6 +8,30 @@ let allProducts = [];
 let sortedProducts = [];
 let isSortedFromCheapest = false;
 
+const fetchShowElement = () => {
+  if (!localStorage.getItem("showElements_")) {
+    localStorage.setItem("showElements_", "false");
+  }
+  return localStorage.getItem("showElements_") === "true";
+};
+
+const setShowElemet = (value = "true") => {
+  localStorage.setItem("showElements_", value);
+};
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "displayElements") {
+    newDiv.style.display = "flex";
+    toggleButton.style.display = "flex";
+    setShowElemet("true");
+  }
+  if (request.action === "hideElements") {
+    newDiv.style.display = "none";
+    toggleButton.style.display = "none";
+    setShowElemet("false");
+  }
+});
+
 const getUrl = () => {
   const url = window.location.href;
   console.log(url);
@@ -18,13 +42,13 @@ const fetchEbayData = async (url, limit = null, price = null) => {
   // ...//www.amazon.com/productname/..
   // ...//www.amazon.com/s?k=productname&...
   let fetchUrl = "";
+  let productname = "";
   if (url.includes("s?k=")) {
-    const productname = url.split("s?k=")[1].split("&")[0];
-    fetchUrl = `http://localhost:4000/ebay/${productname}`;
+    productname = url.split("s?k=")[1].split("&")[0];
   } else {
-    const productname = url.split("/")[3];
-    fetchUrl = `http://localhost:4000/ebay/${productname}`;
+    productname = url.split("/")[3];
   }
+  fetchUrl = `http://34.30.126.151/ebay/${productname}`;
 
   if (limit) {
     fetchUrl += `?limit=${limit}`;
@@ -124,7 +148,7 @@ newDiv.style.top = "0";
 newDiv.style.height = "100%";
 newDiv.style.width = EXTENSION_WIDTH;
 newDiv.style.overflowY = "auto";
-newDiv.style.display = "flex";
+newDiv.style.display = fetchShowElement() ? "flex" : "none";
 newDiv.style.flexDirection = "column";
 newDiv.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
 newDiv.style.color = "white";
@@ -184,7 +208,7 @@ newDiv.appendChild(somediv);
 
 const toggleButton = document.createElement("button");
 toggleButton.innerText = "Toggle";
-toggleButton.style.display = "flex";
+toggleButton.style.display = fetchShowElement() ? "flex" : "none";
 toggleButton.style.position = "fixed";
 toggleButton.style.right = "10px";
 toggleButton.style.top = "10px";
